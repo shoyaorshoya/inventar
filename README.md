@@ -1,0 +1,2 @@
+# inventar
+Comunicare asertivă
