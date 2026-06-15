@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventarul de Asertivitate</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f6f3;
+  --bg3: #f0ede8;
+  --text: #1a1a18;
+  --text2: #5a5a56;
+  --text3: #8a8a84;
+  --border: rgba(0,0,0,0.12);
+  --border2: rgba(0,0,0,0.22);
+  --purple: #534AB7;
+  --purple-bg: #EEEDFE;
+  --purple-text: #3C3489;
+  --purple-border: #AFA9EC;
+  --coral-bg: #FAECE7;
+  --coral-text: #993C1D;
+  --coral-border: #F0997B;
+  --blue-bg: #E6F1FB;
+  --blue-text: #0C447C;
+  --r: 8px;
+  --rlg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1a;
+    --bg2: #262624;
+    --bg3: #2e2e2b;
+    --text: #f0ede8;
+    --text2: #a8a8a2;
+    --text3: #6a6a64;
+    --border: rgba(255,255,255,0.1);
+    --border2: rgba(255,255,255,0.2);
+    --purple-bg: #26215C;
+    --purple-text: #CECBF6;
+    --purple-border: #534AB7;
+    --coral-bg: #4A1B0C;
+    --coral-text: #F5C4B3;
+    --coral-border: #993C1D;
+    --blue-bg: #042C53;
+    --blue-text: #B5D4F4;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: var(--bg3);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  line-height: 1.6;
+}
+
+.card {
+  max-width: 740px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: var(--rlg);
+  border: 0.5px solid var(--border);
+  padding: 2rem 2.5rem;
+}
+
+@media (max-width: 600px) {
+  .card { padding: 1.25rem 1rem; }
+  body { padding: 0.75rem 0.25rem; }
+}
+
+h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+.subtitle { font-size: 14px; color: var(--text2); margin-bottom: 14px; }
+
+.scale { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.scale span {
+  font-size: 12px; color: var(--text2);
+  background: var(--bg2); padding: 3px 10px;
+  border-radius: var(--r); border: 0.5px solid var(--border);
+}
+.scale b { color: var(--text); font-weight: 500; }
+
+.prog-lbl { font-size: 12px; color: var(--text3); text-align: right; margin-bottom: 4px; }
+.prog-bar { height: 4px; background: var(--bg2); border-radius: 2px; margin-bottom: 2rem; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--purple); border-radius: 2px; width: 0%; transition: width 0.3s; }
+
+.q {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 0; border-bottom: 0.5px solid var(--border);
+}
+.q:last-of-type { border-bottom: none; }
+
+.qn { font-size: 12px; color: var(--text3); min-width: 22px; padding-top: 4px; font-weight: 500; flex-shrink: 0; }
+.qt { flex: 1; font-size: 14px; color: var(--text); line-height: 1.55; padding-top: 3px; }
+
+.rg {
+  display: flex; border: 0.5px solid var(--border2);
+  border-radius: var(--r); overflow: hidden; flex-shrink: 0;
+}
+.rg input[type=radio] { display: none; }
+.rg label {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; color: var(--text2);
+  border-right: 0.5px solid var(--border);
+  transition: background 0.12s; user-select: none;
+}
+.rg label:last-child { border-right: none; }
+.rg label:hover { background: var(--bg2); }
+.rg input:checked + label { background: var(--purple-bg); color: var(--purple-text); }
+
+.submit-area { margin-top: 2.5rem; text-align: center; }
+.btn-primary {
+  padding: 11px 32px; font-size: 15px; font-weight: 500;
+  cursor: pointer; border: 0.5px solid var(--border2);
+  border-radius: var(--r); background: var(--bg); color: var(--text);
+  transition: background 0.12s, transform 0.1s;
+}
+.btn-primary:hover { background: var(--bg2); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* Results */
+#results { display: none; }
+#results h2 { font-size: 18px; font-weight: 500; margin-bottom: 1.5rem; }
+
+.calc-note {
+  background: var(--bg2); border: 0.5px solid var(--border);
+  border-radius: var(--r); padding: 1.25rem 1.5rem;
+  margin-bottom: 1.75rem;
+}
+.calc-note h3 { font-size: 15px; font-weight: 500; margin-bottom: 10px; }
+.calc-note p { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 8px; }
+.calc-note p:last-child { margin-bottom: 0; }
+.calc-note strong { color: var(--text); font-weight: 500; }
+.res-intro { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 12px; }
+.res-group { border-radius: var(--rlg); overflow: hidden; margin-bottom: 1.5rem; border: 0.5px solid var(--border); }
+.res-group-header {
+  padding: 12px 16px;
+  font-size: 13px; font-weight: 500; line-height: 1.5;
+}
+.res-group.na .res-group-header { background: #FFF9E6; color: #7A5C00; border-bottom: 0.5px solid #F0D060; }
+.res-group.ag .res-group-header { background: #FFF0F0; color: #8B2020; border-bottom: 0.5px solid #F5C0C0; }
+@media (prefers-color-scheme: dark) {
+  .res-group.na .res-group-header { background: #3A3010; color: #F0D060; border-bottom-color: #5A4A10; }
+  .res-group.ag .res-group-header { background: #3A1010; color: #F5C0C0; border-bottom-color: #5A2020; }
+}
+.res-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; border-bottom: 0.5px solid var(--border);
+}
+.res-row:last-child { border-bottom: none; }
+.res-group.na .res-row { background: #FFFDF0; }
+.res-group.ag .res-row { background: #FFF8F8; }
+@media (prefers-color-scheme: dark) {
+  .res-group.na .res-row { background: #2A2408; }
+  .res-group.ag .res-row { background: #2A0E0E; }
+}
+.res-row-num { font-size: 11px; color: var(--text3); font-weight: 500; min-width: 20px; flex-shrink: 0; }
+.res-row-text { flex: 1; font-size: 13px; color: var(--text); line-height: 1.5; }
+.res-row-val {
+  font-size: 15px; font-weight: 500; min-width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0;
+}
+.res-group.na .res-row-val { background: #F0D060; color: #5A3C00; }
+.res-group.ag .res-row-val { background: #F5C0C0; color: #7A1010; }
+@media (prefers-color-scheme: dark) {
+  .res-group.na .res-row-val { background: #5A4A10; color: #F0D060; }
+  .res-group.ag .res-row-val { background: #5A2020; color: #F5C0C0; }
+}
+
+.reset-area { margin-top: 1.5rem; text-align: center; }
+.btn-reset {
+  padding: 8px 22px; font-size: 13px; cursor: pointer;
+  border: 0.5px solid var(--border2); border-radius: var(--r);
+  background: transparent; color: var(--text2); transition: background 0.12s;
+}
+.btn-reset:hover { background: var(--bg2); }
+
+footer {
+  margin-top: 2rem; padding-top: 1.5rem;
+  border-top: 0.5px solid var(--border);
+  font-size: 12px; color: var(--text3); text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- CHESTIONAR -->
+  <div id="quiz">
+    <h1>Inventarul de Asertivitate</h1>
+    <p class="subtitle">De Robert E. Alberti și Michael L. Emmons — răspunde sincer la fiecare întrebare.</p>
+    <div class="scale">
+      <span><b>0</b> — niciodată</span>
+      <span><b>1</b> — uneori</span>
+      <span><b>2</b> — de obicei</span>
+      <span><b>3</b> — întotdeauna</span>
+    </div>
+
+    <div class="prog-lbl" id="plbl">0 din 35 completate</div>
+    <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+
+    <!-- NEASERTIV -->
+    <div class="sec-lbl">Comportament neasertiv</div>
+
+    <div class="q"><span class="qn">1.</span><span class="qt">Când o persoană este extrem de nedreptă, îi atragi atenția asupra faptului că a fost nedreptă?</span><div class="rg"><input type="radio" name="q1" id="q1v0" value="0"><label for="q1v0">0</label><input type="radio" name="q1" id="q1v1" value="1"><label for="q1v1">1</label><input type="radio" name="q1" id="q1v2" value="2"><label for="q1v2">2</label><input type="radio" name="q1" id="q1v3" value="3"><label for="q1v3">3</label></div></div>
+
+    <div class="q"><span class="qn">2.</span><span class="qt">Ți se pare dificil să iei decizii?</span><div class="rg"><input type="radio" name="q2" id="q2v0" value="0"><label for="q2v0">0</label><input type="radio" name="q2" id="q2v1" value="1"><label for="q2v1">1</label><input type="radio" name="q2" id="q2v2" value="2"><label for="q2v2">2</label><input type="radio" name="q2" id="q2v3" value="3"><label for="q2v3">3</label></div></div>
+
+    <div class="q"><span class="qn">3.</span><span class="qt">Ești deschis/ă critic față de ideile, opiniile sau comportamentul altora?</span><div class="rg"><input type="radio" name="q3" id="q3v0" value="0"><label for="q3v0">0</label><input type="radio" name="q3" id="q3v1" value="1"><label for="q3v1">1</label><input type="radio" name="q3" id="q3v2" value="2"><label for="q3v2">2</label><input type="radio" name="q3" id="q3v3" value="3"><label for="q3v3">3</label></div></div>
+
+    <div class="q"><span class="qn">4.</span><span class="qt">Protestezi atunci când cineva îți ia locul la rând?</span><div class="rg"><input type="radio" name="q4" id="q4v0" value="0"><label for="q4v0">0</label><input type="radio" name="q4" id="q4v1" value="1"><label for="q4v1">1</label><input type="radio" name="q4" id="q4v2" value="2"><label for="q4v2">2</label><input type="radio" name="q4" id="q4v3" value="3"><label for="q4v3">3</label></div></div>
+
+    <div class="q"><span class="qn">5.</span><span class="qt">Eviți adesea oameni sau situații de teamă să nu fii jenat/ă?</span><div class="rg"><input type="radio" name="q5" id="q5v0" value="0"><label for="q5v0">0</label><input type="radio" name="q5" id="q5v1" value="1"><label for="q5v1">1</label><input type="radio" name="q5" id="q5v2" value="2"><label for="q5v2">2</label><input type="radio" name="q5" id="q5v3" value="3"><label for="q5v3">3</label></div></div>
+
+    <div class="q"><span class="qn">6.</span><span class="qt">Ai de obicei încredere în propria judecată?</span><div class="rg"><input type="radio" name="q6" id="q6v0" value="0"><label for="q6v0">0</label><input type="radio" name="q6" id="q6v1" value="1"><label for="q6v1">1</label><input type="radio" name="q6" id="q6v2" value="2"><label for="q6v2">2</label><input type="radio" name="q6" id="q6v3" value="3"><label for="q6v3">3</label></div></div>
+
+    <div class="q"><span class="qn">7.</span><span class="qt">Insistați ca soțul/soția sau colegul de cameră să își asume o parte echitabilă din treburile casnice?</span><div class="rg"><input type="radio" name="q7" id="q7v0" value="0"><label for="q7v0">0</label><input type="radio" name="q7" id="q7v1" value="1"><label for="q7v1">1</label><input type="radio" name="q7" id="q7v2" value="2"><label for="q7v2">2</label><input type="radio" name="q7" id="q7v3" value="3"><label for="q7v3">3</label></div></div>
+
+    <div class="q"><span class="qn">8.</span><span class="qt">Ești predispus/ă să îți „ieși din fire"?</span><div class="rg"><input type="radio" name="q8" id="q8v0" value="0"><label for="q8v0">0</label><input type="radio" name="q8" id="q8v1" value="1"><label for="q8v1">1</label><input type="radio" name="q8" id="q8v2" value="2"><label for="q8v2">2</label><input type="radio" name="q8" id="q8v3" value="3"><label for="q8v3">3</label></div></div>
+
+    <div class="q"><span class="qn">9.</span><span class="qt">Când un vânzător depune un efort, îți este greu să spui „Nu", chiar dacă marfa nu este ceea ce dorești?</span><div class="rg"><input type="radio" name="q9" id="q9v0" value="0"><label for="q9v0">0</label><input type="radio" name="q9" id="q9v1" value="1"><label for="q9v1">1</label><input type="radio" name="q9" id="q9v2" value="2"><label for="q9v2">2</label><input type="radio" name="q9" id="q9v3" value="3"><label for="q9v3">3</label></div></div>
+
+    <div class="q"><span class="qn">10.</span><span class="qt">Când un întârziat este servit înaintea ta, atragi atenția asupra situației?</span><div class="rg"><input type="radio" name="q10" id="q10v0" value="0"><label for="q10v0">0</label><input type="radio" name="q10" id="q10v1" value="1"><label for="q10v1">1</label><input type="radio" name="q10" id="q10v2" value="2"><label for="q10v2">2</label><input type="radio" name="q10" id="q10v3" value="3"><label for="q10v3">3</label></div></div>
+
+    <div class="q"><span class="qn">11.</span><span class="qt">Ești reticent/ă să vorbești într-o discuție sau dezbatere?</span><div class="rg"><input type="radio" name="q11" id="q11v0" value="0"><label for="q11v0">0</label><input type="radio" name="q11" id="q11v1" value="1"><label for="q11v1">1</label><input type="radio" name="q11" id="q11v2" value="2"><label for="q11v2">2</label><input type="radio" name="q11" id="q11v3" value="3"><label for="q11v3">3</label></div></div>
+
+    <div class="q"><span class="qn">12.</span><span class="qt">Dacă o persoană a împrumutat bani sau un obiect și a depășit termenul de returnare, menționezi acest lucru?</span><div class="rg"><input type="radio" name="q12" id="q12v0" value="0"><label for="q12v0">0</label><input type="radio" name="q12" id="q12v1" value="1"><label for="q12v1">1</label><input type="radio" name="q12" id="q12v2" value="2"><label for="q12v2">2</label><input type="radio" name="q12" id="q12v3" value="3"><label for="q12v3">3</label></div></div>
+
+    <div class="q"><span class="qn">13.</span><span class="qt">Continui să susții un argument după ce cealaltă persoană a considerat că este de ajuns?</span><div class="rg"><input type="radio" name="q13" id="q13v0" value="0"><label for="q13v0">0</label><input type="radio" name="q13" id="q13v1" value="1"><label for="q13v1">1</label><input type="radio" name="q13" id="q13v2" value="2"><label for="q13v2">2</label><input type="radio" name="q13" id="q13v3" value="3"><label for="q13v3">3</label></div></div>
+
+    <div class="q"><span class="qn">14.</span><span class="qt">Exprimi în general ceea ce simți?</span><div class="rg"><input type="radio" name="q14" id="q14v0" value="0"><label for="q14v0">0</label><input type="radio" name="q14" id="q14v1" value="1"><label for="q14v1">1</label><input type="radio" name="q14" id="q14v2" value="2"><label for="q14v2">2</label><input type="radio" name="q14" id="q14v3" value="3"><label for="q14v3">3</label></div></div>
+
+    <div class="q"><span class="qn">15.</span><span class="qt">Ești deranjat/ă dacă cineva te privește în timp ce lucrezi?</span><div class="rg"><input type="radio" name="q15" id="q15v0" value="0"><label for="q15v0">0</label><input type="radio" name="q15" id="q15v1" value="1"><label for="q15v1">1</label><input type="radio" name="q15" id="q15v2" value="2"><label for="q15v2">2</label><input type="radio" name="q15" id="q15v3" value="3"><label for="q15v3">3</label></div></div>
+
+    <div class="q"><span class="qn">16.</span><span class="qt">Dacă cineva continuă să lovească scaunul tău la cinema sau o conferință, îi ceri să înceteze?</span><div class="rg"><input type="radio" name="q16" id="q16v0" value="0"><label for="q16v0">0</label><input type="radio" name="q16" id="q16v1" value="1"><label for="q16v1">1</label><input type="radio" name="q16" id="q16v2" value="2"><label for="q16v2">2</label><input type="radio" name="q16" id="q16v3" value="3"><label for="q16v3">3</label></div></div>
+
+    <div class="q"><span class="qn">17.</span><span class="qt">Ți se pare dificil să menții contactul vizual atunci când vorbești cu o altă persoană?</span><div class="rg"><input type="radio" name="q17" id="q17v0" value="0"><label for="q17v0">0</label><input type="radio" name="q17" id="q17v1" value="1"><label for="q17v1">1</label><input type="radio" name="q17" id="q17v2" value="2"><label for="q17v2">2</label><input type="radio" name="q17" id="q17v3" value="3"><label for="q17v3">3</label></div></div>
+
+    <div class="q"><span class="qn">18.</span><span class="qt">Într-un restaurant, când masa este pregătită necorespunzător, ceri chelnerului să corecteze situația?</span><div class="rg"><input type="radio" name="q18" id="q18v0" value="0"><label for="q18v0">0</label><input type="radio" name="q18" id="q18v1" value="1"><label for="q18v1">1</label><input type="radio" name="q18" id="q18v2" value="2"><label for="q18v2">2</label><input type="radio" name="q18" id="q18v3" value="3"><label for="q18v3">3</label></div></div>
+
+    <div class="q"><span class="qn">19.</span><span class="qt">Când descoperi că marfa este defectă, o returnezi pentru o ajustare?</span><div class="rg"><input type="radio" name="q19" id="q19v0" value="0"><label for="q19v0">0</label><input type="radio" name="q19" id="q19v1" value="1"><label for="q19v1">1</label><input type="radio" name="q19" id="q19v2" value="2"><label for="q19v2">2</label><input type="radio" name="q19" id="q19v3" value="3"><label for="q19v3">3</label></div></div>
+
+    <div class="q"><span class="qn">20.</span><span class="qt">Îți manifești mânia prin insulte sau obscenități?</span><div class="rg"><input type="radio" name="q20" id="q20v0" value="0"><label for="q20v0">0</label><input type="radio" name="q20" id="q20v1" value="1"><label for="q20v1">1</label><input type="radio" name="q20" id="q20v2" value="2"><label for="q20v2">2</label><input type="radio" name="q20" id="q20v3" value="3"><label for="q20v3">3</label></div></div>
+
+    <div class="q"><span class="qn">21.</span><span class="qt">Încerci să treci neobservat/ă sau să fii ca „o piesă de mobilier" în situații sociale?</span><div class="rg"><input type="radio" name="q21" id="q21v0" value="0"><label for="q21v0">0</label><input type="radio" name="q21" id="q21v1" value="1"><label for="q21v1">1</label><input type="radio" name="q21" id="q21v2" value="2"><label for="q21v2">2</label><input type="radio" name="q21" id="q21v3" value="3"><label for="q21v3">3</label></div></div>
+
+    <div class="q"><span class="qn">22.</span><span class="qt">Insistați ca administratorul proprietății sau mecanicul să efectueze reparațiile care sunt responsabilitatea sa?</span><div class="rg"><input type="radio" name="q22" id="q22v0" value="0"><label for="q22v0">0</label><input type="radio" name="q22" id="q22v1" value="1"><label for="q22v1">1</label><input type="radio" name="q22" id="q22v2" value="2"><label for="q22v2">2</label><input type="radio" name="q22" id="q22v3" value="3"><label for="q22v3">3</label></div></div>
+
+    <div class="q"><span class="qn">23.</span><span class="qt">Intervii adesea și iei decizii pentru alții?</span><div class="rg"><input type="radio" name="q23" id="q23v0" value="0"><label for="q23v0">0</label><input type="radio" name="q23" id="q23v1" value="1"><label for="q23v1">1</label><input type="radio" name="q23" id="q23v2" value="2"><label for="q23v2">2</label><input type="radio" name="q23" id="q23v3" value="3"><label for="q23v3">3</label></div></div>
+
+    <div class="q"><span class="qn">24.</span><span class="qt">Ești capabil/ă să exprimi dragostea și afecțiunea în mod deschis?</span><div class="rg"><input type="radio" name="q24" id="q24v0" value="0"><label for="q24v0">0</label><input type="radio" name="q24" id="q24v1" value="1"><label for="q24v1">1</label><input type="radio" name="q24" id="q24v2" value="2"><label for="q24v2">2</label><input type="radio" name="q24" id="q24v3" value="3"><label for="q24v3">3</label></div></div>
+
+    <div class="q"><span class="qn">25.</span><span class="qt">Ești capabil/ă să ceri prietenilor mici favoruri sau ajutor?</span><div class="rg"><input type="radio" name="q25" id="q25v0" value="0"><label for="q25v0">0</label><input type="radio" name="q25" id="q25v1" value="1"><label for="q25v1">1</label><input type="radio" name="q25" id="q25v2" value="2"><label for="q25v2">2</label><input type="radio" name="q25" id="q25v3" value="3"><label for="q25v3">3</label></div></div>
+
+    <div class="q"><span class="qn">26.</span><span class="qt">Crezi că ai întotdeauna răspunsul corect?</span><div class="rg"><input type="radio" name="q26" id="q26v0" value="0"><label for="q26v0">0</label><input type="radio" name="q26" id="q26v1" value="1"><label for="q26v1">1</label><input type="radio" name="q26" id="q26v2" value="2"><label for="q26v2">2</label><input type="radio" name="q26" id="q26v3" value="3"><label for="q26v3">3</label></div></div>
+
+    <div class="q"><span class="qn">27.</span><span class="qt">Când ai opinii diferite față de o persoană pe care o respecți, ești capabil/ă să îți susții propriul punct de vedere?</span><div class="rg"><input type="radio" name="q27" id="q27v0" value="0"><label for="q27v0">0</label><input type="radio" name="q27" id="q27v1" value="1"><label for="q27v1">1</label><input type="radio" name="q27" id="q27v2" value="2"><label for="q27v2">2</label><input type="radio" name="q27" id="q27v3" value="3"><label for="q27v3">3</label></div></div>
+
+    <div class="q"><span class="qn">28.</span><span class="qt">Ești capabil/ă să refuzi cererile nerezonabile făcute de prieteni?</span><div class="rg"><input type="radio" name="q28" id="q28v0" value="0"><label for="q28v0">0</label><input type="radio" name="q28" id="q28v1" value="1"><label for="q28v1">1</label><input type="radio" name="q28" id="q28v2" value="2"><label for="q28v2">2</label><input type="radio" name="q28" id="q28v3" value="3"><label for="q28v3">3</label></div></div>
+
+    <div class="q"><span class="qn">29.</span><span class="qt">Ai dificultăți în a complimenta sau lăuda pe alții?</span><div class="rg"><input type="radio" name="q29" id="q29v0" value="0"><label for="q29v0">0</label><input type="radio" name="q29" id="q29v1" value="1"><label for="q29v1">1</label><input type="radio" name="q29" id="q29v2" value="2"><label for="q29v2">2</label><input type="radio" name="q29" id="q29v3" value="3"><label for="q29v3">3</label></div></div>
+
+    <div class="q"><span class="qn">30.</span><span class="qt">Dacă ești deranjat/ă de cineva care fumează lângă tine, poți să o spui?</span><div class="rg"><input type="radio" name="q30" id="q30v0" value="0"><label for="q30v0">0</label><input type="radio" name="q30" id="q30v1" value="1"><label for="q30v1">1</label><input type="radio" name="q30" id="q30v2" value="2"><label for="q30v2">2</label><input type="radio" name="q30" id="q30v3" value="3"><label for="q30v3">3</label></div></div>
+
+    <div class="q"><span class="qn">31.</span><span class="qt">Țipi sau folosești tactici de intimidare pentru a-i face pe alții să facă ceea ce dorești?</span><div class="rg"><input type="radio" name="q31" id="q31v0" value="0"><label for="q31v0">0</label><input type="radio" name="q31" id="q31v1" value="1"><label for="q31v1">1</label><input type="radio" name="q31" id="q31v2" value="2"><label for="q31v2">2</label><input type="radio" name="q31" id="q31v3" value="3"><label for="q31v3">3</label></div></div>
+
+    <div class="q"><span class="qn">32.</span><span class="qt">Termini propozițiile altor persoane în locul lor?</span><div class="rg"><input type="radio" name="q32" id="q32v0" value="0"><label for="q32v0">0</label><input type="radio" name="q32" id="q32v1" value="1"><label for="q32v1">1</label><input type="radio" name="q32" id="q32v2" value="2"><label for="q32v2">2</label><input type="radio" name="q32" id="q32v3" value="3"><label for="q32v3">3</label></div></div>
+
+    <div class="q"><span class="qn">33.</span><span class="qt">Intri în lupte fizice cu alții, în special cu străinii?</span><div class="rg"><input type="radio" name="q33" id="q33v0" value="0"><label for="q33v0">0</label><input type="radio" name="q33" id="q33v1" value="1"><label for="q33v1">1</label><input type="radio" name="q33" id="q33v2" value="2"><label for="q33v2">2</label><input type="radio" name="q33" id="q33v3" value="3"><label for="q33v3">3</label></div></div>
+
+    <div class="q"><span class="qn">34.</span><span class="qt">La mesele în familie, controlezi conversația?</span><div class="rg"><input type="radio" name="q34" id="q34v0" value="0"><label for="q34v0">0</label><input type="radio" name="q34" id="q34v1" value="1"><label for="q34v1">1</label><input type="radio" name="q34" id="q34v2" value="2"><label for="q34v2">2</label><input type="radio" name="q34" id="q34v3" value="3"><label for="q34v3">3</label></div></div>
+
+    <div class="q"><span class="qn">35.</span><span class="qt">Când întâlnești un străin, ești primul/prima care se prezintă și începe o conversație?</span><div class="rg"><input type="radio" name="q35" id="q35v0" value="0"><label for="q35v0">0</label><input type="radio" name="q35" id="q35v1" value="1"><label for="q35v1">1</label><input type="radio" name="q35" id="q35v2" value="2"><label for="q35v2">2</label><input type="radio" name="q35" id="q35v3" value="3"><label for="q35v3">3</label></div></div>
+
+    <div class="submit-area">
+      <button class="btn-primary" onclick="showResults()">Vezi rezultatele &rarr;</button>
+    </div>
+  </div>
+
+  <!-- REZULTATE -->
+  <div id="results">
+    <div class="calc-note">
+      <h3>Calcularea totalului... Ce înseamnă?</h3>
+      <p>Când finalizați Inventarul, veți fi probabil tentat să vă adunați scorul total. <strong>NU O FACEȚI!</strong></p>
+      <p>Acesta nu are nicio semnificație reală. Nu există o calitate generală a asertivității. „Ce este asertiv" trebuie să primească un răspuns în funcție de persoană și situație.</p>
+      <p>Inventarul nu este un test psihologic standardizat; studiile necesare pentru a evalua și aproba amănunțit un test nu au fost efectuate. Astfel, o abordare de tip „scor total" nu este adecvată.</p>
+    </div>
+    <h2>Analizarea rezultatelor dumneavoastră</h2>
+    <p class="res-intro">„Your Perfect Right - A Guide to Assertive Living" sugerează următorii pași pentru analiza răspunsurilor dumneavoastră la Inventarul de Asertivitate:</p>
+    <p class="res-intro">Priviți evenimentele individuale din viața dumneavoastră, implicând persoane sau grupuri anume, și luați în considerare punctele forte și deficiențele în consecință.</p>
+
+    <div class="res-group na">
+      <div class="res-group-header">Aceste întrebări sunt orientate către comportamentul neasertiv. Răspunsurile dumneavoastră la aceste elemente vă spun că vorbiți rar în numele dumneavoastră? Sau există poate unele situații specifice care vă pun probleme?</div>
+      <div id="na-rows"></div>
+    </div>
+
+    <div class="res-group ag">
+      <div class="res-group-header">Aceste întrebări sunt orientate către comportamentul agresiv. Sugerează răspunsurile dumneavoastră la aceste întrebări că îi dominați pe ceilalți mai mult decât v-ați dat seama?</div>
+      <div id="ag-rows"></div>
+    </div>
+
+    <div class="reset-area">
+      <button class="btn-reset" onclick="resetQuiz()">&#8635; Completează din nou</button>
+    </div>
+  </div>
+
+  <footer>Inventarul de Asertivitate &middot; Alberti &amp; Emmons &middot; <em>Your Perfect Right</em></footer>
+</div>
+
+<script>
+const naQs = [1,2,4,5,6,7,9,10,11,12,14,15,16,17,18,19,21,22,24,25,27,28,30,35];
+const agQs = [3,8,13,20,23,26,29,31,32,33,34];
+const allQs = Array.from({length:35},(_,i)=>i+1);
+
+const qTexts = {
+  1: 'Când o persoană este extrem de nedreptă, îi atragi atenția asupra faptului că a fost nedreptă?',
+  2: 'Ți se pare dificil să iei decizii?',
+  3: 'Ești deschis/ă critic față de ideile, opiniile sau comportamentul altora?',
+  4: 'Protestezi atunci când cineva îți ia locul la rând?',
+  5: 'Eviți adesea oameni sau situații de teamă să nu fii jenat/ă?',
+  6: 'Ai de obicei încredere în propria judecată?',
+  7: 'Insistați ca soțul/soția sau colegul de cameră să își asume o parte echitabilă din treburile casnice?',
+  8: 'Ești predispus/ă să îți „ieși din fire"?',
+  9: 'Când un vânzător depune un efort, îți este greu să spui „Nu", chiar dacă marfa nu este ceea ce dorești?',
+  10: 'Când un întârziat este servit înaintea ta, atragi atenția asupra situației?',
+  11: 'Ești reticent/ă să vorbești într-o discuție sau dezbatere?',
+  12: 'Dacă o persoană a împrumutat bani sau un obiect și a depășit termenul de returnare, menționezi acest lucru?',
+  13: 'Continui să susții un argument după ce cealaltă persoană a considerat că este de ajuns?',
+  14: 'Exprimi în general ceea ce simți?',
+  15: 'Ești deranjat/ă dacă cineva te privește în timp ce lucrezi?',
+  16: 'Dacă cineva continuă să lovească scaunul tău la cinema sau o conferință, îi ceri să înceteze?',
+  17: 'Ți se pare dificil să menții contactul vizual atunci când vorbești cu o altă persoană?',
+  18: 'Într-un restaurant, când masa este pregătită necorespunzător, ceri chelnerului să corecteze situația?',
+  19: 'Când descoperi că marfa este defectă, o returnezi pentru o ajustare?',
+  20: 'Îți manifești mânia prin insulte sau obscenități?',
+  21: 'Încerci să treci neobservat/ă sau să fii ca „o piesă de mobilier" în situații sociale?',
+  22: 'Insistați ca administratorul proprietății sau mecanicul să efectueze reparațiile care sunt responsabilitatea sa?',
+  23: 'Intervii adesea și iei decizii pentru alții?',
+  24: 'Ești capabil/ă să exprimi dragostea și afecțiunea în mod deschis?',
+  25: 'Ești capabil/ă să ceri prietenilor mici favoruri sau ajutor?',
+  26: 'Crezi că ai întotdeauna răspunsul corect?',
+  27: 'Când ai opinii diferite față de o persoană pe care o respecți, ești capabil/ă să îți susții propriul punct de vedere?',
+  28: 'Ești capabil/ă să refuzi cererile nerezonabile făcute de prieteni?',
+  29: 'Ai dificultăți în a complimenta sau lăuda pe alții?',
+  30: 'Dacă ești deranjat/ă de cineva care fumează lângă tine, poți să o spui?',
+  31: 'Țipi sau folosești tactici de intimidare pentru a-i face pe alții să facă ceea ce dorești?',
+  32: 'Termini propozițiile altor persoane în locul lor?',
+  33: 'Intri în lupte fizice cu alții, în special cu străinii?',
+  34: 'La mesele în familie, controlezi conversația?',
+  35: 'Când întâlnești un străin, ești primul/prima care se prezintă și începe o conversație?'
+};
+
+document.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener('change', updateProgress));
+
+function updateProgress() {
+  let done = allQs.filter(n => document.querySelector(`input[name="q${n}"]:checked`)).length;
+  document.getElementById('pfill').style.width = Math.round(done/35*100)+'%';
+  document.getElementById('plbl').textContent = done + ' din 35 completate';
+}
+
+function renderGroup(qs, containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  qs.forEach(n => {
+    const v = document.querySelector(`input[name="q${n}"]:checked`).value;
+    const row = document.createElement('div');
+    row.className = 'res-row';
+    row.innerHTML = `<span class="res-row-num">${n}.</span><span class="res-row-text">${qTexts[n]}</span><span class="res-row-val">${v}</span>`;
+    el.appendChild(row);
+  });
+}
+
+function showResults() {
+  const missing = allQs.filter(n => !document.querySelector(`input[name="q${n}"]:checked`));
+  if (missing.length) { alert('Lipsesc răspunsurile la întrebările: ' + missing.join(', ')); return; }
+
+  renderGroup(naQs, 'na-rows');
+  renderGroup(agQs, 'ag-rows');
+
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('results').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetQuiz() {
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  updateProgress();
+  document.getElementById('results').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
